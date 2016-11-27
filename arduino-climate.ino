@@ -1,19 +1,12 @@
 #include <ESP8266WiFi.h>
-#include <Bridge.h>
-#include <HttpClient.h>
 
 char ssid[] = "Holt-2.4Ghz";
 char pass[] = "67351932";
 
 void setup() {
-  Serial.begin(115200);
-  while (!Serial);
-  
 	// Set up LED
+	Serial.begin(115200);
 	pinMode(BUILTIN_LED, OUTPUT);
-
-  // Set up HTTP client
-  Bridge.begin();
 
 	// Connect to WiFi
 	Serial.print("Connecting to WiFi");
@@ -36,7 +29,6 @@ void setup() {
 	}
 	Serial.println("Connection succeeded");
 
-  // Send request
 	String url = "/";
 	Serial.print("Requesting URL: "); Serial.println(url);
 	String request = String("GET ") + url + " HTTP/1.1\r\n" +
@@ -47,12 +39,14 @@ void setup() {
 
 	delay(10);
 
-  // Get response
 	Serial.println("Response: ");
 	while (client.available()) {
 		String line = client.readStringUntil('\r');
 		Serial.println(line);
 	}
+
+	Serial.println("Closing connection");
+	delay(5000);
 }
 
 void loop() {
