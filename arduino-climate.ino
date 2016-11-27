@@ -4,8 +4,9 @@ char ssid[] = "Holt-2.4Ghz";
 char pass[] = "67351932";
 
 void setup() {
+  Serial.begin(115200);
+
 	// Set up LED
-	Serial.begin(115200);
 	pinMode(BUILTIN_LED, OUTPUT);
 
 	// Connect to WiFi
@@ -29,6 +30,7 @@ void setup() {
 	}
 	Serial.println("Connection succeeded");
 
+  // Make request
 	String url = "/";
 	Serial.print("Requesting URL: "); Serial.println(url);
 	String request = String("GET ") + url + " HTTP/1.1\r\n" +
@@ -39,14 +41,12 @@ void setup() {
 
 	delay(10);
 
+  // Receive response
 	Serial.println("Response: ");
 	while (client.available()) {
 		String line = client.readStringUntil('\r');
 		Serial.println(line);
 	}
-
-	Serial.println("Closing connection");
-	delay(5000);
 }
 
 void loop() {
