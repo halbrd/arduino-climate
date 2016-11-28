@@ -1,4 +1,5 @@
 #include <ESP8266WiFi.h>
+#include "dht11.h"
 
 // WiFi setup - set wifiIndex to the index of the credentials you want
 int wifiIndex = 1;
@@ -6,6 +7,10 @@ char wifi[][2][64] = {
   { "Holt-2.4Ghz", "67351932" },
   { "COG_MEL_MAC_WIFI", "Ct$Mel@345" }
 };
+
+// DHT11 (temp/humidity module setup)
+dht11 dht;
+const int dhtPin = 2;
 
 // Request destination settings
 const char* host = "lynq.me";
@@ -63,8 +68,20 @@ void setup() {
 }
 
 void loop() {
-	digitalWrite(BUILTIN_LED, HIGH);
-	delay(1000);
-	digitalWrite(BUILTIN_LED, LOW);
-	delay(1000);
+	delay(5000);
+
+  // Get latest status from DHT11
+  int chk = dht.read(dhtPin);
+  Serial.print("\nRead sensor: ");
+  if (chk == DHTLIB_OK)   // I'm really not a fan of switch statements
+    Serial.println("OK");
+  else if (chk == DHTLIB_ERROR_CHECKSUM)
+    Serial.println("Checksum error");
+  else if (chk == DHTLIB_ERROR_TIMEOUT)
+    Serial.println("Timed out");
+  else
+    Serial.println("Unknown error");
+
+  Serial.print("Temperature: "); Serial.println((float) dht.temperature);
+  Serial.print("Humidity: "); Serial.println((float) dht.humidity);
 }
